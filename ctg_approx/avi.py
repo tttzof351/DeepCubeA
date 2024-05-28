@@ -1,3 +1,8 @@
+import sys
+root_path = "/teamspace/studios/this_studio/DeepCubeA"
+if root_path not in sys.path:
+    sys.path.append(root_path)
+
 from utils import data_utils, nnet_utils, env_utils
 from typing import Dict, List, Tuple, Any
 
@@ -222,6 +227,13 @@ def main():
                                          heur_fn_i_q, heur_fn_o_qs)
 
         nnet_utils.stop_heuristic_fn_runners(heur_procs, heur_fn_i_q)
+
+        # print("states_nnet:", states_nnet)
+        print("states_nnet:", states_nnet[0].shape)
+
+        # print("outputs:", outputs)
+        print("outputs:", outputs.shape)
+        # exit()
 
         # train nnet
         num_train_itrs: int = args_dict['epochs_per_update'] * np.ceil(outputs.shape[0] / args_dict['batch_size'])

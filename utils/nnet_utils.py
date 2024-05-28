@@ -134,7 +134,11 @@ def get_device() -> Tuple[torch.device, List[int], bool]:
 def load_nnet(model_file: str, nnet: nn.Module, device: torch.device = None) -> nn.Module:
     # get state dict
     if device is None:
-        state_dict = torch.load(model_file)
+        is_cpu_only = not torch.cuda.is_available()
+        if is_cpu_only:
+            state_dict = torch.load(model_file, map_location=torch.device("cpu"))
+        else:
+            state_dict = torch.load(model_file)
     else:
         state_dict = torch.load(model_file, map_location=device)
 
