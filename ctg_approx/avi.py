@@ -228,13 +228,6 @@ def main():
 
         nnet_utils.stop_heuristic_fn_runners(heur_procs, heur_fn_i_q)
 
-        # print("states_nnet:", states_nnet)
-        print("states_nnet:", states_nnet[0].shape)
-
-        # print("outputs:", outputs)
-        print("outputs:", outputs.shape)
-        # exit()
-
         # train nnet
         num_train_itrs: int = args_dict['epochs_per_update'] * np.ceil(outputs.shape[0] / args_dict['batch_size'])
         print("Training model for update number %i for %i iterations" % (update_num, num_train_itrs))

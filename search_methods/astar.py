@@ -1,3 +1,8 @@
+import sys
+root_path = "/teamspace/studios/this_studio/DeepCubeA"
+if root_path not in sys.path:
+    sys.path.append(root_path)
+
 from typing import List, Tuple, Dict, Callable, Optional, Any
 from environments.environment_abstract import Environment, State
 import numpy as np
@@ -486,6 +491,8 @@ def bwas_cpp(args, env: Environment, states: List[State], results_file: str):
         raise ValueError("Unknown c++ environment: %s" % args.env)
 
     # start heuristic proc
+    if 'CUDA_VISIBLE_DEVICES' not in os.environ:
+        os.environ['CUDA_VISIBLE_DEVICES'] = ''
     num_parallel: int = len(os.environ['CUDA_VISIBLE_DEVICES'].split(","))
     device, devices, on_gpu = nnet_utils.get_device()
     heur_fn_i_q, heur_fn_o_qs, heur_procs = nnet_utils.start_heur_fn_runners(num_parallel, args.model_dir, device,
@@ -617,6 +624,7 @@ def cpp_listener(sock, args, env: Environment, state_dim: int, heur_fn_i_q, heur
 
 
 def heuristic_fn_par(states_nnet: List[np.ndarray], heur_fn_i_q, heur_fn_o_qs):
+    # print("heuristic_fn_par:", len(states_nnet))
     num_parallel: int = len(heur_fn_o_qs)
 
     num_states: int = states_nnet[0].shape[0]

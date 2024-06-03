@@ -25,8 +25,9 @@ def gbfs_update(states: List[State], env: Environment, num_steps: int, heuristic
     states_update: List = []
     cost_to_go_update_l: List[float] = []
     for traj in trajs_flat:
-        states_update.append(traj[0])
-        cost_to_go_update_l.append(traj[1])
+        state, v = traj
+        states_update.append(traj[0]) # S
+        cost_to_go_update_l.append(traj[1]) # V
 
     cost_to_go_update = np.array(cost_to_go_update_l)
 
@@ -122,7 +123,7 @@ class Updater:
         return states_update_nnet, output_update, is_solved
 
     def _update(self) -> Tuple[List[np.ndarray], np.ndarray, np.ndarray]:
-        # process results
+        # process results   
         states_update_nnet_l: List[List[np.ndarray]] = []
         cost_to_go_update_l: List = []
         is_solved_l: List = []

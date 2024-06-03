@@ -43,43 +43,43 @@ class ResnetModel(nn.Module):
         self.fc_out = nn.Linear(resnet_dim, out_dim)
 
     def forward(self, states_nnet):
-        x = states_nnet
+        x = states_nnet # (54)
 
         # preprocess input
         if self.one_hot_depth > 0:
             x = F.one_hot(x.long(), self.one_hot_depth)
             x = x.float()
-            x = x.view(-1, self.state_dim * self.one_hot_depth)
+            x = x.view(-1, self.state_dim * self.one_hot_depth) # (324)
         else:
             x = x.float()
 
         # first two hidden layers
-        x = self.fc1(x)
-        if self.batch_norm:
-            x = self.bn1(x)
+        x = self.fc1(x) # (324 -> 5000)
+        if self.batch_norm: 
+            x = self.bn1(x) #(5000)
 
-        x = F.relu(x)
-        x = self.fc2(x)
+        x = F.relu(x) 
+        x = self.fc2(x) # (5000 -> 1000)
         if self.batch_norm:
-            x = self.bn2(x)
+            x = self.bn2(x) # (1000)
 
-        x = F.relu(x)
+        x = F.relu(x) #(1000)
 
         # resnet blocks
         for block_num in range(self.num_resnet_blocks):
             res_inp = x
             if self.batch_norm:
-                x = self.blocks[block_num][0](x)
-                x = self.blocks[block_num][1](x)
-                x = F.relu(x)
-                x = self.blocks[block_num][2](x)
-                x = self.blocks[block_num][3](x)
+                x = self.blocks[block_num][0](x) # Linear  1000
+                x = self.blocks[block_num][1](x) # BatchNorm
+                x = F.relu(x) 
+                x = self.blocks[block_num][2](x) # Linear
+                x = self.blocks[block_num][3](x) # BatchNorm
             else:
                 x = self.blocks[block_num][0](x)
                 x = F.relu(x)
-                x = self.blocks[block_num][1](x)
+                x = self.blocks[block_num][1](x) # 1000
 
-            x = F.relu(x + res_inp)
+            x = F.relu(x + res_inp) # (1000)
 
         # output
         x = self.fc_out(x)

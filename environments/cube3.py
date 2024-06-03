@@ -131,7 +131,7 @@ class Cube3(Environment):
 
         # initialize
         num_states: int = len(states)
-        num_env_moves: int = self.get_num_moves()
+        num_env_moves: int = self.get_num_moves() # 12
 
         states_exp: List[List[State]] = [[] for _ in range(len(states))]
 
